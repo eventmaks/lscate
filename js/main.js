@@ -156,6 +156,17 @@
     }
   });
 
+
+  /* Progressive image reveal: blurred while decoding/loading, crisp when ready. */
+  $$('.ls-progressive-img').forEach(img => {
+    const done = () => img.classList.add('is-loaded');
+    if (img.complete && img.naturalWidth) done();
+    else {
+      img.addEventListener('load', done, { once: true });
+      img.addEventListener('error', done, { once: true });
+    }
+  });
+
   /* Mobile review expansion */
   const reviewMore = $('#reviewMore');
   const reviewGrid = $('.ls-review-grid');
@@ -243,7 +254,9 @@
       `Имя: ${data.get('name') || '—'}`,
       `Телефон: ${data.get('phone') || '—'}`,
       `Мероприятие: ${data.get('event') || '—'}`,
-      `Гостей: ${data.get('guests') || '—'}`
+      `Дата: ${data.get('date') || '—'}`,
+      `Гостей: ${data.get('guests') || '—'}`,
+      `Пожелания: ${data.get('message') || '—'}`
     ].join('\n');
     goal('form_submit');
     window.open(`https://wa.me/79262062799?text=${encodeURIComponent(text)}`, '_blank', 'noopener');
@@ -438,4 +451,68 @@
     if (!img.complete) img.addEventListener('load', relayout, {once:true});
   });
   relayout();
+})();
+
+/* V5.5 — cookie consent and conditional analytics */
+(function(){
+  const banner = document.getElementById('lsCookie');
+  const accept = document.getElementById('lsCookieAccept');
+  const essential = document.getElementById('lsCookieEssential');
+  if (!banner) return;
+
+  const key = window.LSCATE_COOKIE_CONSENT_KEY || 'lscate_cookie_consent_v1';
+  let choice = null;
+  try { choice = localStorage.getItem(key); } catch (e) {}
+
+  if (!choice) banner.hidden = false;
+
+  const save = value => {
+    try { localStorage.setItem(key, value); } catch (e) {}
+    banner.hidden = true;
+  };
+
+  accept?.addEventListener('click', () => {
+    save('accepted');
+    if (typeof window.loadLscateAnalytics === 'function') window.loadLscateAnalytics();
+  });
+
+  essential?.addEventListener('click', () => {
+    save('essential');
+  });
+})();
+
+/* V5.7 — mobile swipe progress indicators */
+(function(){
+  const mq = window.matchMedia('(max-width:699px)');
+  const specs = [
+    ['.ls-offers-grid','Предложения'],
+    ['.ls-story-steps','Этапы'],
+    ['.ls-advantages-v8 .ls-v8-grid','Преимущества'],
+    ['.ls-occasion-grid','Поводы'],
+    ['.ls-services-v8 .ls-v8-grid','Услуги'],
+    ['.ls-reviews-collage','Отзывы']
+  ];
+
+  const setup = (scroller,label) => {
+    if (!scroller || scroller.dataset.swipeUi === '1') return;
+    scroller.dataset.swipeUi = '1';
+    const ui = document.createElement('div');
+    ui.className = 'ls-swipe-indicator';
+    ui.innerHTML = '<span class="ls-swipe-label">Листайте ← →</span><span class="ls-swipe-dots" aria-hidden="true"><i class="ls-swipe-dot is-active"></i><i class="ls-swipe-dot"></i><i class="ls-swipe-dot"></i></span>';
+    scroller.insertAdjacentElement('afterend',ui);
+    const dots = Array.from(ui.querySelectorAll('.ls-swipe-dot'));
+    let used = false;
+    const update = () => {
+      if (!mq.matches) return;
+      const max = Math.max(1, scroller.scrollWidth - scroller.clientWidth);
+      const ratio = Math.min(1, Math.max(0, scroller.scrollLeft / max));
+      const idx = ratio < .28 ? 0 : ratio > .72 ? 2 : 1;
+      dots.forEach((dot,i)=>dot.classList.toggle('is-active',i===idx));
+      if (scroller.scrollLeft > 8 && !used){used=true;ui.classList.add('is-used')}
+    };
+    scroller.addEventListener('scroll',update,{passive:true});
+    window.addEventListener('resize',update,{passive:true});
+    update();
+  };
+  specs.forEach(([selector,label])=>document.querySelectorAll(selector).forEach(el=>setup(el,label)));
 })();
