@@ -1551,3 +1551,252 @@ img{height:auto}
     width:100%!important;
   }
 }
+
+
+/* Footer legal requisites */
+.ls-footer-legal{gap:18px}
+.ls-footer-brand,.ls-footer-requisites{display:flex;flex-direction:column;gap:5px}
+.ls-footer-brand strong,.ls-footer-requisites strong{color:rgba(255,255,255,.9);font-size:12px;font-weight:800}
+.ls-footer-requisites{max-width:760px}
+.ls-footer-requisites span{color:rgba(255,255,255,.58)}
+@media(min-width:760px){
+  .ls-footer-in.ls-footer-legal{grid-template-columns:minmax(190px,.55fr) minmax(0,1.45fr);gap:28px;align-items:start}
+  .ls-footer-requisites{text-align:right;justify-self:end}
+}
+
+/* ===== V5.2 — mobile-first polish ===== */
+@media (max-width:699px){
+  :root{
+    --header-h:62px;
+    --wrap:min(100% - 24px,1260px);
+  }
+  html{scroll-padding-top:calc(var(--header-h) + 10px)}
+  #ls-catering-site{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+  .ls-section{padding-top:48px;padding-bottom:48px}
+  .ls-kicker{margin-bottom:10px;font-size:10px;letter-spacing:.18em}
+  .ls-h2{font-size:clamp(32px,9.6vw,40px);line-height:1;letter-spacing:-.035em}
+  .ls-copy{margin-top:14px;font-size:15px;line-height:1.5}
+
+  /* header + menu */
+  .ls-header-in{gap:8px}
+  .ls-logo{width:72px;height:46px;flex-basis:72px}
+  .ls-menu{width:46px;height:46px;padding:10px}
+  .ls-nav{padding:10px 12px calc(18px + env(safe-area-inset-bottom))}
+  .ls-nav>a{min-height:50px;font-size:16px}
+  .ls-nav-mobile-actions{grid-template-columns:1fr;gap:8px;margin-top:12px}
+
+  /* hero */
+  .ls-hero{height:100svh;min-height:620px;max-height:880px;padding-top:calc(var(--header-h) + 18px);padding-bottom:104px;align-items:flex-end}
+  .ls-hero h1{font-size:clamp(40px,11.6vw,50px);line-height:.94;max-width:12ch}
+  .ls-hero p{font-size:15px;line-height:1.5;margin:16px 0 20px;max-width:32ch}
+  .ls-hero-cta{min-height:54px;width:100%;max-width:none}
+  .ls-hero-dots{right:8px;bottom:74px}
+  .ls-hero-dot{width:36px;height:36px}
+  .ls-hero-dot:after{top:17px;left:6px;right:6px}
+
+  /* moving ribbon */
+  .ls-event-ribbon{overflow:hidden}
+  .ls-event-ribbon-track{white-space:nowrap;will-change:transform}
+
+  /* offers */
+  .ls-offer-head{margin-bottom:18px}
+  .ls-offers-grid{gap:8px}
+  .ls-offer{min-height:430px}
+  .ls-offer-content{padding:20px 18px}
+  .ls-offer h3{font-size:25px;margin:8px 0 12px}
+  .ls-new{font-size:32px}
+
+  /* tasting */
+  .ls-tasting{min-height:520px;background-attachment:scroll!important}
+  .ls-tasting-card{padding:22px 18px!important;max-width:none!important}
+
+  /* signature storyline */
+  .ls-storyline{padding-top:46px!important;padding-bottom:48px!important}
+  .ls-storyline-head{margin-bottom:20px!important}
+  .ls-storyline-scene{grid-template-columns:1fr!important;gap:12px!important}
+  .ls-story-node{display:grid!important;grid-template-columns:48px minmax(0,1fr)!important;gap:10px!important;align-items:start!important}
+  .ls-story-dot{width:46px!important;height:46px!important}
+  .ls-story-card{padding:16px 16px!important;margin:0!important}
+  .ls-story-card strong{font-size:18px!important}
+  .ls-story-card p{font-size:14px!important;line-height:1.45!important}
+
+  /* advantages + services */
+  .ls-v8-head{margin-bottom:16px}
+  .ls-v8-columns{gap:8px}
+  .ls-v8-photo-card{height:360px!important;min-height:360px!important;border-radius:0}
+  .ls-v8-photo-card .ls-v8-photo-content{padding:20px 17px!important}
+  .ls-v8-photo-card h3{font-size:27px!important;line-height:.98!important;margin-bottom:12px!important}
+  .ls-v8-photo-card p{font-size:14px!important;line-height:1.45!important}
+
+  /* portfolio */
+  #ls-catering-site .ls-portfolio .ls-gallery-new{margin-top:18px!important;height:auto!important}
+  #ls-catering-site .ls-gallery-new .ls-gallery-item{position:relative!important;left:auto!important;top:auto!important;width:100%!important}
+  #ls-catering-site .ls-gallery-new .ls-gallery-item + .ls-gallery-item{margin-top:0!important}
+  #ls-catering-site .ls-gallery-new .ls-gallery-item img{width:100%!important;height:auto!important;object-fit:contain!important}
+
+  /* occasions */
+  .ls-occasions-head{margin-bottom:18px}
+  .ls-occasion-grid{gap:8px}
+  .ls-occ{height:330px}
+  .ls-occ-copy{left:10px;right:10px;bottom:10px;padding:14px}
+  .ls-occ h3{font-size:28px}
+  .ls-occ p{font-size:14px;line-height:1.42;margin-top:8px}
+
+  /* reviews */
+  .ls-reviews{padding-top:48px!important;padding-bottom:50px!important}
+  .ls-reviews-title{margin-bottom:24px}
+  .ls-reviews-collage{gap:14px!important}
+  .ls-review-col,.ls-review-col--center,.ls-review-col--right{gap:14px!important}
+  .ls-review-cloud,.ls-review-cloud--solo{padding:18px 18px 16px!important}
+  .ls-review-cloud::before{inset:-5px -6px -6px -6px;border-radius:28px}
+  .ls-review-cloud p{font-size:14px!important;line-height:1.5!important}
+  .ls-review-author{font-size:14px!important;margin-top:10px!important}
+  .ls-review-meta{font-size:9px!important;padding:6px 9px!important}
+
+  /* trust */
+  .ls-logo-marquees{padding:0 8px!important;gap:12px!important}
+  .ls-track img{height:46px!important}
+
+  /* forms + contacts */
+  .ls-final-light-grid{gap:24px!important}
+  .ls-form-light{padding:16px!important;border-radius:12px!important}
+  .ls-form input,.ls-form select{min-height:54px}
+  .ls-form .ls-btn{min-height:54px}
+  .ls-direct-contacts{padding-top:4px}
+  .ls-map-grid{grid-template-columns:1fr!important}
+  .ls-contact{padding:28px 16px!important}
+  .ls-map-wrap{min-height:360px!important}
+  .ls-map{min-height:360px!important}
+
+  /* legal footer */
+  .ls-footer{padding-top:24px;padding-bottom:calc(88px + env(safe-area-inset-bottom))}
+  .ls-footer-in{gap:14px!important;font-size:10.5px;line-height:1.5}
+  .ls-footer-brand,.ls-footer-requisites{gap:4px}
+  .ls-footer-requisites{max-width:none}
+
+  /* fixed conversion bar */
+  .ls-mobile-cta{grid-template-columns:1fr 1.2fr;gap:6px;padding:6px 8px calc(6px + env(safe-area-inset-bottom));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .ls-mobile-cta a,.ls-mobile-cta button{min-height:52px;font-size:12px;padding:0 6px}
+
+  /* dialogs/chat */
+  .ls-modal{padding:8px!important;align-items:flex-end!important}
+  .ls-modal-card{width:100%;max-height:92svh;border-radius:16px 16px 0 0;padding:24px 16px calc(20px + env(safe-area-inset-bottom))}
+  .ls-chat{left:6px;right:6px;bottom:calc(6px + env(safe-area-inset-bottom));max-height:88svh;border-radius:14px}
+}
+
+@media (max-width:390px){
+  :root{--wrap:min(100% - 20px,1260px)}
+  .ls-hero h1{font-size:39px}
+  .ls-hero p{font-size:14.5px}
+  .ls-v8-photo-card{height:340px!important;min-height:340px!important}
+  .ls-v8-photo-card h3{font-size:25px!important}
+  .ls-occ{height:310px}
+}
+
+@media (max-height:680px) and (max-width:699px){
+  .ls-hero{min-height:580px;padding-bottom:92px}
+  .ls-hero h1{font-size:38px}
+  .ls-hero p{margin:12px 0 16px}
+}
+
+/* ===== V5.3 — horizontal swipe cards on phones ===== */
+@media (max-width:699px){
+  /* Shared swipe behaviour */
+  .ls-offers-grid,
+  .ls-v8-columns,
+  .ls-occasion-grid,
+  .ls-storyline-scene,
+  .ls-reviews-collage{
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    gap:12px!important;
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    scroll-snap-type:x mandatory;
+    scroll-padding-left:12px;
+    padding:4px 12px 18px!important;
+    margin-left:-12px!important;
+    margin-right:-12px!important;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    overscroll-behavior-inline:contain;
+  }
+  .ls-offers-grid::-webkit-scrollbar,
+  .ls-v8-columns::-webkit-scrollbar,
+  .ls-occasion-grid::-webkit-scrollbar,
+  .ls-storyline-scene::-webkit-scrollbar,
+  .ls-reviews-collage::-webkit-scrollbar{display:none}
+
+  /* offers */
+  .ls-offers-grid .ls-offer{
+    flex:0 0 min(84vw,340px)!important;
+    width:min(84vw,340px)!important;
+    scroll-snap-align:start;
+    min-height:430px!important;
+  }
+
+  /* signature storyline */
+  .ls-storyline-scene .ls-story-node{
+    flex:0 0 min(82vw,330px)!important;
+    width:min(82vw,330px)!important;
+    display:block!important;
+    scroll-snap-align:start;
+  }
+  .ls-storyline-scene .ls-story-dot{margin-bottom:10px!important}
+  .ls-storyline-scene .ls-story-line{display:none!important}
+  .ls-story-card{height:100%}
+
+  /* advantages + services */
+  .ls-v8-columns .ls-v8-column{
+    flex:0 0 min(82vw,330px)!important;
+    width:min(82vw,330px)!important;
+    scroll-snap-align:start;
+  }
+  .ls-v8-columns .ls-v8-photo-card{
+    height:390px!important;
+    min-height:390px!important;
+  }
+
+  /* occasions */
+  .ls-occasion-grid .ls-occ{
+    flex:0 0 min(84vw,340px)!important;
+    width:min(84vw,340px)!important;
+    height:370px!important;
+    scroll-snap-align:start;
+  }
+
+  /* reviews: flatten the 3 desktop columns into one swipe row */
+  .ls-reviews-collage{align-items:stretch!important}
+  .ls-reviews-collage .ls-review-col,
+  .ls-reviews-collage .ls-review-col--center,
+  .ls-reviews-collage .ls-review-col--right{
+    display:contents!important;
+  }
+  .ls-reviews-collage .ls-review-float{
+    flex:0 0 min(86vw,350px)!important;
+    width:min(86vw,350px)!important;
+    scroll-snap-align:start;
+    animation:none!important;
+  }
+  .ls-reviews-collage .ls-review-cloud,
+  .ls-reviews-collage .ls-review-cloud--solo{
+    height:100%;
+    box-sizing:border-box;
+  }
+
+  /* A small hint that there is more content to the right */
+  .ls-offer-head::after,
+  .ls-v8-head::after,
+  .ls-occasions-head::after,
+  .ls-reviews-title::after,
+  .ls-storyline-head::after{
+    content:"Листайте →";
+    display:block;
+    margin-top:10px;
+    color:var(--muted);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+  }
+}
