@@ -46,37 +46,43 @@
   }
   $$('#lsNav a').forEach(a => a.addEventListener('click', closeMenu));
 
-  /* Reveal animation */
+  /* Reveal animation — replay whenever a section re-enters the viewport. */
   const revealEls = $$('.reveal');
   if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const revealObserver = new IntersectionObserver((entries, observer) => {
+    const revealObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-in');
-          observer.unobserve(entry.target);
+        } else {
+          entry.target.classList.remove('is-in');
         }
       });
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    }, { rootMargin: '-4% 0px -8% 0px', threshold: 0.08 });
     revealEls.forEach(el => revealObserver.observe(el));
   } else {
     revealEls.forEach(el => el.classList.add('is-in'));
   }
 
 
-  /* Dedicated tasting animation: wait until the section is clearly visible. */
+  /* Dedicated tasting animation — replay when scrolling down or back up. */
   const tastingSection = $('.ls-tasting');
   const tastingCard = $('.ls-tasting-slide');
   if (tastingSection && tastingCard) {
+    let tastingTimer = null;
     const showTastingCard = () => tastingCard.classList.add('is-in');
+    const hideTastingCard = () => tastingCard.classList.remove('is-in');
     if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      const tastingObserver = new IntersectionObserver((entries, observer) => {
+      const tastingObserver = new IntersectionObserver(entries => {
         entries.forEach(entry => {
           if (entry.isIntersecting && entry.intersectionRatio >= 0.28) {
-            window.setTimeout(showTastingCard, 90);
-            observer.disconnect();
+            window.clearTimeout(tastingTimer);
+            tastingTimer = window.setTimeout(showTastingCard, 90);
+          } else if (!entry.isIntersecting || entry.intersectionRatio < 0.08) {
+            window.clearTimeout(tastingTimer);
+            hideTastingCard();
           }
         });
-      }, { threshold: [0.28, 0.4] });
+      }, { threshold: [0, 0.08, 0.28, 0.4] });
       tastingObserver.observe(tastingSection);
     } else {
       showTastingCard();
@@ -161,12 +167,26 @@
     });
   }
 
-  /* Lightbox for portfolio photos and videos */
+  /* Lightbox for portfolio photos — premium navigation */
   const lightbox = $('#lightbox');
   const lbContent = $('#lbContent');
-  function openLightbox(markup) {
+  const lbCounter = $('#lbCounter');
+  const galleryButtons = $$('[data-lightbox]');
+  let activeGalleryIndex = 0;
+
+  function renderGalleryImage(index) {
+    if (!lbContent || !galleryButtons.length) return;
+    activeGalleryIndex = (index + galleryButtons.length) % galleryButtons.length;
+    const button = galleryButtons[activeGalleryIndex];
+    const img = $('img', button);
+    const alt = img?.alt || 'Фото Love Story Catering';
+    lbContent.innerHTML = `<img src="${button.dataset.lightbox}" alt="${alt.replace(/"/g, '&quot;')}">`;
+    if (lbCounter) lbCounter.textContent = `${activeGalleryIndex + 1} / ${galleryButtons.length}`;
+  }
+
+  function openGallery(index) {
     if (!lightbox || !lbContent) return;
-    lbContent.innerHTML = markup;
+    renderGalleryImage(index);
     lightbox.hidden = false;
     document.body.classList.add('modal-open');
     $('.ls-close', lightbox)?.focus();
@@ -179,11 +199,18 @@
     if (lbContent) lbContent.innerHTML = '';
     document.body.classList.remove('modal-open');
   }
-  $$('[data-lightbox]').forEach(button => {
-    button.addEventListener('click', () => openLightbox(`<img src="${button.dataset.lightbox}" alt="Фото Love Story Catering">`));
+  galleryButtons.forEach((button, index) => {
+    button.addEventListener('click', () => openGallery(index));
   });
+  $('.ls-lightbox-prev', lightbox || document)?.addEventListener('click', () => renderGalleryImage(activeGalleryIndex - 1));
+  $('.ls-lightbox-next', lightbox || document)?.addEventListener('click', () => renderGalleryImage(activeGalleryIndex + 1));
   $('.ls-close', lightbox || document)?.addEventListener('click', closeLightbox);
   lightbox?.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => {
+    if (!lightbox || lightbox.hidden) return;
+    if (e.key === 'ArrowLeft') renderGalleryImage(activeGalleryIndex - 1);
+    if (e.key === 'ArrowRight') renderGalleryImage(activeGalleryIndex + 1);
+  });
 
   /* Request modal */
   const modal = $('#formModal');
@@ -295,4 +322,120 @@
 
   /* Avoid an unused reference warning in strict build checks. */
   void site;
+
+  /* V3.9 visual accents */
+  const progressBar = document.querySelector('.ls-scroll-progress span');
+  const updateProgress = () => {
+    if (!progressBar) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    progressBar.style.transform = `scaleX(${ratio})`;
+  };
+  updateProgress();
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress, { passive: true });
+
+  const heroVisual = document.querySelector('.ls-hero');
+  if (heroVisual && window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    heroVisual.addEventListener('pointermove', e => {
+      const r = heroVisual.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5;
+      const y = (e.clientY - r.top) / r.height - .5;
+      heroVisual.style.setProperty('--mx', `${x * 10}px`);
+      heroVisual.style.setProperty('--my', `${y * 7}px`);
+    });
+    heroVisual.addEventListener('pointerleave', () => {
+      heroVisual.style.setProperty('--mx', '0px');
+      heroVisual.style.setProperty('--my', '0px');
+    });
+  }
+
+  if (window.matchMedia('(hover:hover) and (pointer:fine)').matches) {
+    document.querySelectorAll('.ls-portfolio,.ls-advantages-v8,.ls-services-v8,.ls-reviews').forEach(section => {
+      section.addEventListener('pointermove', e => {
+        const r = section.getBoundingClientRect();
+        section.style.setProperty('--spot-x', `${e.clientX - r.left}px`);
+        section.style.setProperty('--spot-y', `${e.clientY - r.top}px`);
+      });
+      section.addEventListener('pointerleave', () => {
+        section.style.setProperty('--spot-x', '-999px');
+        section.style.setProperty('--spot-y', '-999px');
+      });
+    });
+  }
+
+
+  /* V4.0 signature storyline path */
+  const storySection = document.querySelector('.ls-storyline');
+  const storyPath = document.getElementById('lsStoryPath');
+  if (storySection && storyPath && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const length = storyPath.getTotalLength();
+    storyPath.style.strokeDasharray = String(length);
+    storyPath.style.strokeDashoffset = String(length);
+    const updateStoryPath = () => {
+      const r = storySection.getBoundingClientRect();
+      const start = window.innerHeight * .78;
+      const end = window.innerHeight * .18;
+      const progress = Math.min(1, Math.max(0, (start - r.top) / (r.height + start - end)));
+      storyPath.style.strokeDashoffset = String(length * (1 - progress));
+    };
+    updateStoryPath();
+    window.addEventListener('scroll', updateStoryPath, { passive: true });
+    window.addEventListener('resize', updateStoryPath, { passive: true });
+  }
+
+})();
+
+/* V5.0 — packed masonry portfolio, no internal empty spaces */
+(function(){
+  const gallery = document.getElementById('portfolioGallery');
+  if (!gallery) return;
+
+  const layout = () => {
+    const items = Array.from(gallery.querySelectorAll('.ls-gallery-item'));
+    if (!items.length) return;
+
+    if (window.innerWidth < 700) {
+      gallery.style.height = '';
+      items.forEach(item => {
+        item.style.left = '';
+        item.style.top = '';
+        item.style.width = '';
+      });
+      return;
+    }
+
+    const galleryWidth = gallery.clientWidth;
+    const columns = window.innerWidth >= 1200 ? 2 : 2;
+    const colWidth = galleryWidth / columns;
+    const heights = new Array(columns).fill(0);
+
+    items.forEach(item => {
+      item.style.width = colWidth + 'px';
+      const img = item.querySelector('img');
+      const naturalW = Number(img?.getAttribute('width')) || img?.naturalWidth || 1;
+      const naturalH = Number(img?.getAttribute('height')) || img?.naturalHeight || 1;
+      const itemHeight = colWidth * naturalH / naturalW;
+
+      let col = 0;
+      for (let i = 1; i < columns; i++) {
+        if (heights[i] < heights[col]) col = i;
+      }
+
+      item.style.left = (col * colWidth) + 'px';
+      item.style.top = heights[col] + 'px';
+      item.style.height = itemHeight + 'px';
+      heights[col] += itemHeight;
+    });
+
+    gallery.style.height = Math.max(...heights) + 'px';
+  };
+
+  const relayout = () => requestAnimationFrame(layout);
+  window.addEventListener('load', relayout, {once:true});
+  window.addEventListener('resize', relayout, {passive:true});
+  gallery.querySelectorAll('img').forEach(img => {
+    if (!img.complete) img.addEventListener('load', relayout, {once:true});
+  });
+  relayout();
 })();
